@@ -8,18 +8,6 @@ export default function Header() {
                 <Link href="/" className="text-xl font-bold">
                     {siteConfig.name}
                 </Link>
-
-                <nav className="flex items-center gap-6">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                        >
-                            {link.title}
-                        </Link>
-                    ))}
-                </nav>
             </div>
         </header>
     );

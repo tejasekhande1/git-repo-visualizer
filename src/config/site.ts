@@ -3,8 +3,8 @@
  */
 
 export const siteConfig = {
-    name: "First App",
-    description: "A modern Next.js application",
+    name: "GitInsights",
+    description: "A sleek Next.js dashboard that transforms Git activity into clear, interactive visual insights for contributors, commits, and repository trends.",
     url: "https://example.com",
     ogImage: "https://example.com/og.jpg",
     links: {
@@ -12,8 +12,8 @@ export const siteConfig = {
         github: "https://github.com/yourusername",
     },
     creator: {
-        name: "Your Name",
-        url: "https://yourwebsite.com",
+        name: "Tejas Ekhande",
+        url: "https://www.tejasekhande.dev",
     },
 };
 

@@ -1,55 +1,67 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { DashboardHeader, RepositoryList, AddRepositoryModal } from "@/components/dashboard";
 import { Header, Footer } from "@/components/layout";
-import Button from "@/components/ui/Button";
-import ExampleCard from "@/components/features/ExampleCard";
-import { siteConfig } from "@/config/site";
+import { api, type Repository } from "@/lib/api";
 
 export default function Home() {
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    loadRepositories();
+  }, []);
+
+  const loadRepositories = async () => {
+    try {
+      setIsLoading(true);
+      const data = await api.getRepositories();
+      setRepositories(data);
+    } catch (error) {
+      console.error("Failed to load repositories:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddRepository = async (url: string) => {
+    const newRepo = await api.createRepository(url);
+    setRepositories((prev) => [...prev, newRepo]);
+  };
+
+  const filteredRepositories = repositories.filter((repo) =>
+    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
       <Header />
 
       <main className="flex-1">
-        <section className="container mx-auto max-w-7xl px-4 py-16">
-          <div className="text-center">
-            <h1 className="mb-4 text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-              Welcome to {siteConfig.name}
-            </h1>
-            <p className="mb-8 text-xl text-gray-600 dark:text-gray-400">
-              {siteConfig.description}
-            </p>
+        <div className="container mx-auto max-w-7xl px-4 py-8">
+          <DashboardHeader
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onAddClick={() => setIsModalOpen(true)}
+          />
 
-            <div className="flex items-center justify-center gap-4">
-              <Button size="lg" variant="default">
-                Get Started
-              </Button>
-              <Button size="lg" variant="outline">
-                Learn More
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <ExampleCard
-              title="Well Organized"
-              description="Industry-standard folder structure with clear separation of concerns"
-              link="#"
-            />
-            <ExampleCard
-              title="Type Safe"
-              description="Full TypeScript support with centralized type definitions"
-              link="#"
-            />
-            <ExampleCard
-              title="Developer Friendly"
-              description="Path aliases and barrel exports for clean, readable imports"
-              link="#"
-            />
-          </div>
-        </section>
+          <RepositoryList
+            repositories={filteredRepositories}
+            isLoading={isLoading}
+          />
+        </div>
       </main>
 
       <Footer />
+
+      <AddRepositoryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddRepository}
+      />
     </div>
   );
 }
