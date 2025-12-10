@@ -92,6 +92,7 @@ export default function AddRepositoryModal({
                             <div className="flex justify-end gap-3">
                                 <Button
                                     type="button"
+                                    className=" hover:text-black"
                                     variant="outline"
                                     onClick={onClose}
                                     disabled={isLoading}

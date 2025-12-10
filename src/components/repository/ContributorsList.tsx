@@ -10,9 +10,9 @@ export default function ContributorsList({ contributors }: ContributorsListProps
     return (
         <div className="mb-8">
             <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Top Contributors
+                Contributors
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4">
                 {contributors.map((contributor, index) => (
                     <motion.div
                         key={contributor.email}
@@ -21,9 +21,8 @@ export default function ContributorsList({ contributors }: ContributorsListProps
                         transition={{ delay: index * 0.1 }}
                         className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-zinc-900"
                     >
-                        <div className="flex h-10 w-10 min-w-[2.5rem] items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800">
+                        <div className="flex h-10 w-10 min-w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800">
                             {contributor.avatarUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={contributor.avatarUrl}
                                     alt={contributor.name}
