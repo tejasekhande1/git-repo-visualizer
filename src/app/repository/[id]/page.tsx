@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { Header, Footer } from "@/components/layout";
+import { Header } from "@/components/layout";
 import {
     RepoHeader,
     ContributorsList,
@@ -47,7 +47,6 @@ export default function RepositoryPage({ params }: { params: Promise<{ id: strin
                 <main className="flex flex-1 items-center justify-center">
                     <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -66,7 +65,6 @@ export default function RepositoryPage({ params }: { params: Promise<{ id: strin
                         </p>
                     </div>
                 </main>
-                <Footer />
             </div>
         );
     }
@@ -91,8 +89,6 @@ export default function RepositoryPage({ params }: { params: Promise<{ id: strin
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DashboardHeader, RepositoryList, AddRepositoryModal } from "@/components/dashboard";
-import { Header, Footer } from "@/components/layout";
+import { Header } from "@/components/layout";
 import { api, type Repository } from "@/lib/api";
 
 export default function Home() {
@@ -54,8 +54,6 @@ export default function Home() {
           />
         </div>
       </main>
-
-      <Footer />
 
       <AddRepositoryModal
         isOpen={isModalOpen}
