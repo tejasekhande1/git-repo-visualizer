@@ -51,7 +51,7 @@ export default function RepoHeader({ repo, stats }: RepoHeaderProps) {
 
                 <div className="flex gap-3">
                     <Link href={repo.url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="gap-2">
+                        <Button variant="outline" className="gap-2 hover:text-black">
                             <ExternalLink className="h-4 w-4" />
                             View on GitHub
                         </Button>
