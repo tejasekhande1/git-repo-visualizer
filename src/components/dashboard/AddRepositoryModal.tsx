@@ -18,6 +18,16 @@ export default function AddRepositoryModal({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
+    const handleModalClose = () => {
+        resetFormState();
+        onClose();
+    };
+
+    const resetFormState = () => {
+        setUrl("");
+        setError("");
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!url.trim()) return;
@@ -44,7 +54,7 @@ export default function AddRepositoryModal({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
+                        onClick={handleModalClose}
                         className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
                     />
 
@@ -60,7 +70,7 @@ export default function AddRepositoryModal({
                                 Add Repository
                             </h2>
                             <button
-                                onClick={onClose}
+                                onClick={handleModalClose}
                                 className="rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800"
                             >
                                 <X className="h-5 w-5 text-gray-500" />
@@ -94,7 +104,7 @@ export default function AddRepositoryModal({
                                     type="button"
                                     className=" hover:text-black"
                                     variant="outline"
-                                    onClick={onClose}
+                                    onClick={handleModalClose}
                                     disabled={isLoading}
                                 >
                                     Cancel
