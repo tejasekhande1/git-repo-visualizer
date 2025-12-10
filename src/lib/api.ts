@@ -3,35 +3,9 @@
  * Simulates backend data for initial frontend development
  */
 
-export interface Contributor {
-    name: string;
-    email: string;
-    commits: number;
-    avatarUrl?: string;
-}
+import { Repository, GitStats, Contributor, ActivityLevel } from '@/types/repository';
 
-export interface ActivityLevel {
-    date: string; // YYYY-MM-DD
-    count: number;
-    level: 0 | 1 | 2 | 3 | 4;
-}
-
-export interface GitStats {
-    totalCommits: number;
-    lastCommit: string;
-    contributors: Contributor[];
-    activity: ActivityLevel[];
-}
-
-export interface Repository {
-    id: string;
-    name: string;
-    url: string;
-    createdAt: string;
-    starCount: number;
-    forkCount: number;
-    description?: string;
-}
+export type { Repository, GitStats, Contributor, ActivityLevel };
 
 // Mock Data
 const MOCK_REPOS: Repository[] = [
