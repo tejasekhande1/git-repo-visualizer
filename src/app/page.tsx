@@ -1,35 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { DashboardHeader, RepositoryList, AddRepositoryModal } from "@/components/dashboard";
 import { Header } from "@/components/layout";
-import { api, type Repository } from "@/lib/api";
+import { useUIStore } from "@/lib/store";
+import { useRepositories, useCreateRepository } from "@/hooks/useRepositories";
 
 export default function Home() {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    loadRepositories();
-  }, []);
-
-  const loadRepositories = async () => {
-    try {
-      setIsLoading(true);
-      const data = await api.getRepositories();
-      setRepositories(data);
-    } catch (error) {
-      console.error("Failed to load repositories:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { searchQuery, setSearchQuery, isAddModalOpen, setIsAddModalOpen } = useUIStore();
+  const { data: repositories = [], isLoading } = useRepositories();
+  const createRepoMutation = useCreateRepository();
 
   const handleAddRepository = async (url: string) => {
-    const newRepo = await api.createRepository(url);
-    setRepositories((prev) => [...prev, newRepo]);
+    await createRepoMutation.mutateAsync(url);
   };
 
   const filteredRepositories = repositories.filter((repo) =>
@@ -45,7 +27,7 @@ export default function Home() {
           <DashboardHeader
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            onAddClick={() => setIsModalOpen(true)}
+            onAddClick={() => setIsAddModalOpen(true)}
           />
 
           <RepositoryList
@@ -56,8 +38,8 @@ export default function Home() {
       </main>
 
       <AddRepositoryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddRepository}
       />
     </div>

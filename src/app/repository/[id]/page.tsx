@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { use } from "react";
 import { Header } from "@/components/layout";
 import {
     RepoHeader,
@@ -8,37 +8,14 @@ import {
     ContributionHeatmap,
     ActivityChart,
 } from "@/components/repository";
-import { api, type Repository, type GitStats } from "@/lib/api";
+import { useRepository, useRepositoryStats } from "@/hooks/useRepositories";
 import { Loader2 } from "lucide-react";
 
 export default function RepositoryPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = use(params);
-    const [repo, setRepo] = useState<Repository | null>(null);
-    const [stats, setStats] = useState<GitStats | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        loadRepoDetails();
-    }, []);
-
-    const loadRepoDetails = async () => {
-        try {
-            setIsLoading(true);
-            const [repoData, statsData] = await Promise.all([
-                api.getRepository(resolvedParams.id),
-                api.getRepositoryStats(resolvedParams.id),
-            ]);
-
-            if (repoData) {
-                setRepo(repoData);
-                setStats(statsData);
-            }
-        } catch (error) {
-            console.error("Failed to load repository details:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const { data: repo, isLoading: isRepoLoading } = useRepository(resolvedParams.id);
+    const { data: stats, isLoading: isStatsLoading } = useRepositoryStats(resolvedParams.id);
+    const isLoading = isRepoLoading || isStatsLoading;
 
     if (isLoading) {
         return (
