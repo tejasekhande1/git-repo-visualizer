@@ -1,5 +1,5 @@
 import { motion, LayoutGroup } from "framer-motion";
-import { GitBranch } from "lucide-react";
+import { Database } from "lucide-react";
 import RepositoryCard from "./RepositoryCard";
 import type { Repository } from "@/lib/api";
 
@@ -15,8 +15,10 @@ export default function RepositoryList({ repositories, isLoading }: RepositoryLi
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
-                        className="h-48 animate-pulse rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-zinc-900/50"
-                    />
+                        className="h-52 animate-pulse rounded-2xl border border-border/20 bg-muted/20"
+                    >
+                        <div className="h-full w-full bg-gradient-to-br from-transparent via-white/5 to-transparent animate-shimmer" />
+                    </div>
                 ))}
             </div>
         );
@@ -25,19 +27,23 @@ export default function RepositoryList({ repositories, isLoading }: RepositoryLi
     if (repositories.length === 0) {
         return (
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-24 text-center"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-32 text-center glass rounded-3xl border-dashed border-2 border-border/20 mx-4"
             >
-                <div className="mb-4 rounded-full bg-gray-100 p-4 dark:bg-zinc-900">
-                    <GitBranch className="h-8 w-8 text-gray-400" />
+                <div className="mb-6 rounded-2xl bg-primary/10 p-5 ring-1 ring-primary/20">
+                    <Database className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    No repositories found
+                <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                    Analytical Void Detected
                 </h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Get started by adding a new repository to visualize.
+                <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+                    The platform engine currently has no active data streams. Provision a repository URL to begin deep-dive visualization.
                 </p>
+                <div className="mt-8 flex items-center gap-2 text-xs font-mono text-muted-foreground/50">
+                    <span className="h-2 w-2 rounded-full bg-destructive/50" />
+                    SYSTEM_IDLE: Awaiting repository ingestion...
+                </div>
             </motion.div>
         );
     }

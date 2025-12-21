@@ -1,39 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { DashboardHeader, RepositoryList, AddRepositoryModal } from "@/components/dashboard";
 import { Header } from "@/components/layout";
-import { api, type Repository } from "@/lib/api";
+import { useUIStore } from "@/lib/store";
+import { useRepositories, useCreateRepository, useSyncRepositories } from "@/hooks/useRepositories";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function Home() {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { searchQuery, setSearchQuery, isAddModalOpen, setIsAddModalOpen } = useUIStore();
+  const { data: repositories = [], isLoading, error, isError } = useRepositories();
+  const createRepoMutation = useCreateRepository();
 
   useEffect(() => {
-    loadRepositories();
-  }, []);
-
-  const loadRepositories = async () => {
-    try {
-      setIsLoading(true);
-      const data = await api.getRepositories();
-      setRepositories(data);
-    } catch (error) {
-      console.error("Failed to load repositories:", error);
-    } finally {
-      setIsLoading(false);
+    if (isError && error) {
+      toast.error(error.message || "Failed to fetch repositories");
     }
-  };
+  }, [isError, error]);
 
   const handleAddRepository = async (url: string) => {
-    const newRepo = await api.createRepository(url);
-    setRepositories((prev) => [...prev, newRepo]);
+    await createRepoMutation.mutateAsync(url);
+  };
+
+  const syncRepoMutation = useSyncRepositories();
+
+  const handleSyncRepositories = async () => {
+      try {
+          const result = await syncRepoMutation.mutateAsync();
+          toast.success(result.message || "Repositories synced successfully");
+      } catch {
+          toast.error("Failed to sync repositories");
+      }
   };
 
   const filteredRepositories = repositories.filter((repo) =>
-    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (repo.name || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -45,7 +46,8 @@ export default function Home() {
           <DashboardHeader
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            onAddClick={() => setIsModalOpen(true)}
+            onAddClick={() => setIsAddModalOpen(true)}
+            onSyncClick={handleSyncRepositories}
           />
 
           <RepositoryList
@@ -56,8 +58,8 @@ export default function Home() {
       </main>
 
       <AddRepositoryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddRepository}
       />
     </div>

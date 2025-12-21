@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { GitFork, Star, ArrowRight, Github } from "lucide-react";
+import { Github, Hash, Lock, Globe, GitBranch, Clock } from "lucide-react";
 import type { Repository } from "@/lib/api";
-import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
+import { formatDate } from "@/lib/utils";
 
 interface RepositoryCardProps {
     repo: Repository;
@@ -10,51 +11,66 @@ interface RepositoryCardProps {
 }
 
 export default function RepositoryCard({ repo, index }: RepositoryCardProps) {
+    const { t } = useTranslation();
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
         >
-            <Link href={`/repository/${repo.id}`} className="block h-full">
-                <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-gray-900 hover:shadow-lg dark:border-gray-800 dark:bg-zinc-900 dark:hover:border-zinc-500">
+            <Link href={`/repository/${repo.id}`} className="block group">
+                <div className="relative flex flex-col justify-between overflow-hidden border border-border bg-background p-5 transition-all hover:border-foreground/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-sm">
+                    {/* Index Marker */}
+                    <div className="absolute right-0 top-0 p-2 text-[8px] font-mono text-muted-foreground opacity-30 group-hover:opacity-100 transition-opacity">
+                        REF:0x{String(repo.id).slice(0, 4).toUpperCase()}
+                    </div>
+
                     <div>
-                        <div className="mb-4 flex items-start justify-between">
-                            <div className="flex items-center gap-2">
-                                <Github className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-                                <h3 className="line-clamp-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                    {repo.name}
-                                </h3>
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-secondary group-hover:bg-foreground group-hover:text-background transition-colors">
+                                <Github className="h-4 w-4" />
                             </div>
-                            <motion.div
-                                className="opacity-0 transition-opacity group-hover:opacity-100"
-                                initial={{ x: -10 }}
-                                whileHover={{ x: 0 }}
-                            >
-                                <ArrowRight className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                            </motion.div>
+                            <div className="min-w-0 flex-1">
+                                <h3 className="text-sm font-bold tracking-tight text-foreground uppercase group-hover:text-primary transition-colors truncate">
+                                    {repo.name || "Unnamed Repository"}
+                                </h3>
+                                <div className="flex items-center gap-1 text-[9px] font-mono font-bold text-muted-foreground/60 uppercase">
+                                    <Hash className="h-2 w-2" />
+                                    <span>{t("dashboard.id")}: {String(repo.id).slice(0, 8)}</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <p className="mb-6 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
-                            {repo.description || "No description available"}
+                        <p className="mb-6 line-clamp-2 text-xs leading-relaxed text-muted-foreground font-medium">
+                            {repo.description || "Experimental data structure analysis for this specified repository."}
                         </p>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center justify-between border-t border-border/50 pt-4">
                         <div className="flex gap-4">
-                            <div className="flex items-center gap-1">
-                                <Star className="h-4 w-4" />
-                                <span>{repo.starCount.toLocaleString()}</span>
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
+                                {repo.isPrivate ? (
+                                    <Lock className="h-3 w-3 text-amber-500" />
+                                ) : (
+                                    <Globe className="h-3 w-3 text-sky-500" />
+                                )}
+                                <span>{repo.isPrivate ? "Private" : "Public"}</span>
                             </div>
-                            <div className="flex items-center gap-1">
-                                <GitFork className="h-4 w-4" />
-                                <span>{repo.forkCount.toLocaleString()}</span>
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
+                                <GitBranch className="h-3 w-3 text-violet-500" />
+                                <span>{repo.defaultBranch}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
+                                <Clock className="h-3 w-3 text-emerald-500" />
+                                <span>{formatDate(new Date(repo.updatedAt))}</span>
                             </div>
                         </div>
 
-                        <span className="text-xs text-gray-400">
-                            {new Date(repo.createdAt).toLocaleDateString()}
-                        </span>
+                        <div className="flex items-center gap-2">
+                             <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                             <span className="text-[9px] font-mono font-black text-muted-foreground/40 uppercase tracking-tighter">{t("common.verified")}</span>
+                        </div>
                     </div>
                 </div>
             </Link>

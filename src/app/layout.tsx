@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
+import { Providers } from "@/components/providers/Providers";
+import { Toaster } from "sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,7 +27,10 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        <Toaster richColors position="top-right" />
+        </Providers>
       </body>
     </html>
   );

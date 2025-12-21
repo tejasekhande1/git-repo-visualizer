@@ -3,7 +3,7 @@
  */
 
 export const siteConfig = {
-    name: "GitInsights",
+    name: "Panini",
     description: "A sleek Next.js dashboard that transforms Git activity into clear, interactive visual insights for contributors, commits, and repository trends.",
     url: "https://example.com",
     ogImage: "https://example.com/og.jpg",
