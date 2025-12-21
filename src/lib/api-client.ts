@@ -4,6 +4,8 @@ interface RequestOptions extends RequestInit {
     params?: Record<string, string>;
 }
 
+import { useAuthStore } from './store';
+
 class ApiClient {
     private baseURL: string;
     private defaultHeaders: HeadersInit;
@@ -30,10 +32,14 @@ class ApiClient {
             });
         }
 
+        // Get token from auth store
+        const token = useAuthStore.getState().token;
+
         const config: RequestInit = {
             method,
             headers: {
                 ...this.defaultHeaders,
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
                 ...headers,
             },
             ...customConfig,
@@ -44,7 +50,8 @@ class ApiClient {
 
             if (!response.ok) {
                 const errorBody = await response.json().catch(() => ({}));
-                throw new Error(errorBody.message || `API Error: ${response.status} ${response.statusText}`);
+                const errorMessage = errorBody.error || errorBody.message || `API Error: ${response.status} ${response.statusText}`;
+                throw new Error(errorMessage);
             }
 
             const contentType = response.headers.get("content-type");
@@ -91,7 +98,7 @@ class ApiClient {
     }
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 export const apiClient = new ApiClient(API_BASE_URL);
 
 export default ApiClient;

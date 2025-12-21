@@ -3,19 +3,38 @@
 import { DashboardHeader, RepositoryList, AddRepositoryModal } from "@/components/dashboard";
 import { Header } from "@/components/layout";
 import { useUIStore } from "@/lib/store";
-import { useRepositories, useCreateRepository } from "@/hooks/useRepositories";
+import { useRepositories, useCreateRepository, useSyncRepositories } from "@/hooks/useRepositories";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function Home() {
   const { searchQuery, setSearchQuery, isAddModalOpen, setIsAddModalOpen } = useUIStore();
-  const { data: repositories = [], isLoading } = useRepositories();
+  const { data: repositories = [], isLoading, error, isError } = useRepositories();
   const createRepoMutation = useCreateRepository();
+
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error.message || "Failed to fetch repositories");
+    }
+  }, [isError, error]);
 
   const handleAddRepository = async (url: string) => {
     await createRepoMutation.mutateAsync(url);
   };
 
+  const syncRepoMutation = useSyncRepositories();
+
+  const handleSyncRepositories = async () => {
+      try {
+          const result = await syncRepoMutation.mutateAsync();
+          toast.success(result.message || "Repositories synced successfully");
+      } catch {
+          toast.error("Failed to sync repositories");
+      }
+  };
+
   const filteredRepositories = repositories.filter((repo) =>
-    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (repo.name || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -28,6 +47,7 @@ export default function Home() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             onAddClick={() => setIsAddModalOpen(true)}
+            onSyncClick={handleSyncRepositories}
           />
 
           <RepositoryList

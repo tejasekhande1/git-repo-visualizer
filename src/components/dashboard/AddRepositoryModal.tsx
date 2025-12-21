@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Link2, Box } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 
@@ -39,7 +39,7 @@ export default function AddRepositoryModal({
             setUrl("");
             onClose();
         } catch (err) {
-            setError("Failed to add repository. Please try again.");
+            setError("ERR: REMOTE_ACCESS_DENIED");
         } finally {
             setIsLoading(false);
         }
@@ -55,66 +55,90 @@ export default function AddRepositoryModal({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={handleModalClose}
-                        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]"
                     />
 
                     {/* Modal */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.98, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-800 dark:bg-zinc-900"
+                        exit={{ opacity: 0, scale: 0.98, y: 10 }}
+                        className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded border border-border bg-background p-8 shadow-2xl"
                     >
-                        <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                                Add Repository
-                            </h2>
-                            <button
-                                onClick={handleModalClose}
-                                className="rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800"
-                            >
-                                <X className="h-5 w-5 text-gray-500" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                            <div>
-                                <label
-                                    htmlFor="repo-url"
-                                    className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                >
-                                    Repository URL
-                                </label>
-                                <input
-                                    id="repo-url"
-                                    type="url"
-                                    placeholder="https://github.com/username/repo"
-                                    className="h-10 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 dark:border-gray-800 dark:bg-zinc-800 dark:text-gray-100 dark:focus:border-gray-100 dark:focus:ring-gray-100"
-                                    value={url}
-                                    onChange={(e) => setUrl(e.target.value)}
-                                    autoFocus
-                                />
-                                {error && (
-                                    <p className="mt-2 text-sm text-red-500">{error}</p>
-                                )}
-                            </div>
-
-                            <div className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    className=" hover:text-black"
-                                    variant="outline"
+                        <div className="relative z-10">
+                            <div className="mb-8 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-9 w-9 rounded bg-foreground flex items-center justify-center">
+                                        <Box className="h-4 w-4 text-background" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold tracking-tight text-foreground uppercase">
+                                            Ingest Resource
+                                        </h2>
+                                        <p className="text-[10px] font-mono font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">0x7F - Provisioning Sequence</p>
+                                    </div>
+                                </div>
+                                <button
                                     onClick={handleModalClose}
-                                    disabled={isLoading}
+                                    className="h-8 w-8 rounded hover:bg-secondary flex items-center justify-center transition-colors"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" disabled={isLoading || !url}>
-                                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Add Repository
-                                </Button>
+                                    <X className="h-4 w-4 text-muted-foreground" />
+                                </button>
                             </div>
-                        </form>
+
+                            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                                <div className="space-y-2">
+                                    <label
+                                        htmlFor="repo-url"
+                                        className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-0.5"
+                                    >
+                                        Endpoint URL (GitHub/Remote)
+                                    </label>
+                                    <div className="relative group">
+                                        <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
+                                        <input
+                                            id="repo-url"
+                                            type="url"
+                                            placeholder="https://github.com/org/repo"
+                                            className="h-12 w-full rounded border border-border bg-secondary/30 pl-10 pr-4 text-xs font-semibold outline-none transition-all placeholder:text-muted-foreground/30 focus:border-foreground/30 focus:ring-1 focus:ring-foreground/5"
+                                            value={url}
+                                            onChange={(e) => setUrl(e.target.value)}
+                                            autoFocus
+                                        />
+                                    </div>
+                                    {error && (
+                                        <div className="mt-2 text-[10px] font-mono font-bold text-rose-500 uppercase tracking-tighter">
+                                            {error}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-end gap-3 pt-2">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleModalClose}
+                                        disabled={isLoading}
+                                    >
+                                        Abort
+                                    </Button>
+                                    <Button 
+                                        type="submit" 
+                                        variant="default" 
+                                        size="md"
+                                        disabled={isLoading || !url} 
+                                        className="min-w-[140px]"
+                                    >
+                                        {isLoading ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            "Confirm Ingest"
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
                     </motion.div>
                 </>
             )}

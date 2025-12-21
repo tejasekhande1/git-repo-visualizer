@@ -1,0 +1,49 @@
+{
+    "common": {
+        "appName": "Panini",
+        "loading": "Decoding Telemetry...",
+        "error": "Error Detected",
+        "abort": "Abort",
+        "confirm": "Confirm",
+        "search": "Search assets...",
+        "verified": "Verified"
+    },
+    "nav": {
+        "signIn": "Sign In",
+        "getStarted": "Get Started",
+        "signOut": "Sign Out"
+    },
+    "dashboard": {
+        "title": "Discovery Console",
+        "subtitle": "Precision tracking and structural analysis platform.",
+        "addRepo": "Add Repository",
+        "ingestResource": "Ingest Resource",
+        "urlLabel": "Endpoint URL (GitHub/Remote)",
+        "id": "ID",
+        "stellar": "Stellar",
+        "branches": "Branches",
+        "sync": "Sync"
+    },
+    "repository": {
+        "activeLink": "Active Link",
+        "activeAssets": "Active Assets",
+        "rank": "Rank",
+        "points": "Points",
+        "matrix": "Propagation Matrix",
+        "vector": "30-Day Activity Vector",
+        "thermal": "Thermal Allocation",
+        "analysis": "52-Week Vector Analysis",
+        "expand": "Expand Roster",
+        "status": "System Status: Stable"
+    },
+    "auth": {
+        "access": "Access Terminal",
+        "sequence": "Panini Authentication Sequence",
+        "initialize": "Run Initialize",
+        "provision": "Provision Node",
+        "request": "Request Access",
+        "uplink": "Initiate Uplink",
+        "email": "Auth Identifier",
+        "password": "Security Key"
+    }
+}
